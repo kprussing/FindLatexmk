@@ -74,7 +74,7 @@ This module defines the following macros:
     add_latex_document(<output> <main source> [<additional sources> ...]
                        [ALL] [ENGINE PDFLATEX | LUALATEX | XELATEX])
 
-  This function takes a main LaTeX source file and creats a target that
+  This function takes a main LaTeX source file and creates a target that
   will run ``latexmk`` on the input.  All of the dependency scanning for
   the target is deferred to ``latexmk``.  The driver for ``latexmk`` is
   deduced from the extension of the output file.  In short, the
@@ -87,7 +87,9 @@ This module defines the following macros:
   link where I read that at the moment).  It is a ``FATAL_ERROR`` to
   specify the ``ENGINE`` for a DVI or Postscript target.  The ``ALL``
   option adds the document to the ``ALL`` command.  Additional flags may
-  be passed via :variable:`Latesmk_FLAGS`.
+  be passed via :variable:`Latesmk_FLAGS`.  The command only uses the
+  main source.  All additional sources are set as explicit dependencies
+  for the main target (``<output>``) at the CMake level.
 
   .. note::
     It is highly recommended to *not* add the ``-dvi``, ``-pdf``,

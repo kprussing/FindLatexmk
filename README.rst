@@ -1,5 +1,5 @@
 FindLatexmk
------------
+===========
 
 A ``cmake(1)`` module to locate ``latexmk(1)`` and provide a function to
 add a LaTeX document to the build system.
@@ -22,7 +22,7 @@ proper ``cmake`` target assuming the user has not added too many
 customizations in their ``latexmkrc``.
 
 Usage
-^^^^^
+-----
 
 To include the module in a project:
 
@@ -60,8 +60,18 @@ Additional flags to ``latexmk`` may be specified with
    not recognized as byproducts by ``cmake``.
 
 License
-^^^^^^^
+-------
 
 Distributed under the OSI-approved BSD 2-Clause License.  See the module
 source for details.
 
+Change Log
+----------
+
+Unreleased
+^^^^^^^^^^
+
+0.1 - 2020-09-05
+^^^^^^^^^^^^^^^^
+
+-   Functional release
