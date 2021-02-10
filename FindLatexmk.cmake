@@ -146,7 +146,7 @@ function(_latexmk__find_latexmk)
     # Otherwise, scan known directories.  We do this by inspecting the
     # results of :module:`FindLATEX`.  Note, we only really care about
     # the main compilers.
-    if (DEFINED Latexmk_DIR)
+    if (DEFINED Latexmk_DIR AND Latexmk_DIR)
         find_program(Latexmk_Executable latexmk
                      PATHS ${Latexmk_DIR}
                      NO_DEFAULT_PATH)
