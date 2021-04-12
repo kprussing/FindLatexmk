@@ -62,16 +62,25 @@ Additional flags to ``latexmk`` may be specified with
 License
 -------
 
-Distributed under the OSI-approved BSD 2-Clause License.  See the module
-source for details.
+Distributed under the OSI-approved `BSD 2-Clause License`_.  See the
+module source for details.
 
 Change Log
 ----------
 
-Unreleased
-^^^^^^^^^^
+Unreleased_
+^^^^^^^^^^^
 
-[0.1] - 2020-09-05
-^^^^^^^^^^^^^^^^^^
+Fixed
+"""""
+
+    -   Corrected check for :variable:`Latexmk_DIR`
+
+0.1_ - 2020-09-05
+^^^^^^^^^^^^^^^^^
 
 -   Functional release
+
+.. _BSD 2-Clause License: https://opensource.org/licenses/BSD-2-Clause
+.. _Unreleased: https://github.com/kprussing/findlatexmk/compare/0.1...HEAD
+.. _0.1: https://github.com/kprussing/findlatexmk/releases/tag/0.1
