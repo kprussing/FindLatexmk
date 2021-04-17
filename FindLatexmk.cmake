@@ -29,8 +29,8 @@ FindLatexmk
 -----------
 
 Locate ``latexmk`` and provide a function to add a LaTeX document as a
-target.  It locates ``latexmk`` by inspecting :variable:`ENV{LATEXMK}`,
-checking in :variable:`Latexmk_DIR`, and finally in the directories
+target.  It locates ``latexmk`` by inspecting the environment variable
+``LATEXMK``, checking in ``Latexmk_DIR``, and finally in the directories
 containing the binaries found by :module:`FindLATEX`.  This module will
 also load :module:`FindLATEX` to check that a valid LaTeX compiler is on
 the system.
@@ -38,29 +38,29 @@ the system.
 Imported Targets
 ^^^^^^^^^^^^^^^^
 
-This module defines the following :ref:`Imported Targets <Imported Targets>`:
+This module defines the following :prop_tgt:`IMPORTED` targets:
 
-*   ``Latexmk::Latexmk``
-    The ``latexmk`` executable
+``Latexmk::Latexmk``
+  The ``latexmk`` executable
 
 Result Variables
 ^^^^^^^^^^^^^^^^
 
-*   ``Latexmk_FOUND``
-    The system has ``latexmk``
-*   ``Latexmk_Executable``
-    The path to the ``latexmk`` executable
+``Latexmk_FOUND``
+  The system has ``latexmk``
+``Latexmk_Executable``
+  The path to the ``latexmk`` executable
 
 Hints
 ^^^^^
 
-Additional flags to ``latexmk`` may be specified via
-:variable:`Latexmk_FLAGS`.
+Additional flags to ``latexmk`` may be specified via ``Latexmk_FLAGS``.
 
-This module will inspect :variable`ENV{LATEXMK}` for an absolute path to
-``latexmk``.  It is a fatal error if this is not an executable.  It will
-then check :variable:`Latexmk_DIR` for the executable before checking
-the directories containing the binaries found by :module:`FindLATEX`.
+This module will inspect the environment variable ``LATEXMK`` for an
+absolute path to ``latexmk``.  It is a fatal error if this is not an
+executable.  It will then check ``Latexmk_DIR`` for the executable
+before checking the directories containing the binaries found by
+:module:`FindLATEX`.
 
 Defined Macros
 ^^^^^^^^^^^^^^
@@ -87,19 +87,18 @@ This module defines the following macros:
   link where I read that at the moment).  It is a ``FATAL_ERROR`` to
   specify the ``ENGINE`` for a DVI or Postscript target.  The ``ALL``
   option adds the document to the ``ALL`` command.  Additional flags may
-  be passed via :variable:`Latesmk_FLAGS`.  The command only uses the
-  main source.  All additional sources are set as explicit dependencies
-  for the main target (``<output>``) at the CMake level.
+  be passed via ``Latesmk_FLAGS``.  The command only uses the main
+  source.  All additional sources are set as explicit dependencies for
+  the main target (``<output>``) at the CMake level.
 
   .. note::
     It is highly recommended to *not* add the ``-dvi``, ``-pdf``,
-    ``-lualatex``, ``-xelatex``, or ``-ps`` flags to
-    :variable:`Latexmk_FLAGS` or the equivalent entries in the
-    ``latexmkrc`` as this may lead to files that are not recognized as
-    byproducts by CMake.
+    ``-lualatex``, ``-xelatex``, or ``-ps`` flags to ``Latexmk_FLAGS``
+    or the equivalent entries in the ``latexmkrc`` as this may lead to
+    files that are not recognized as byproducts by CMake.
 
   .. note::
-    This method does not sanity check the :variable:`Latexmk_FLAGS` for
+    This method does not sanity check the ``Latexmk_FLAGS`` for
     incompatible flags.
 
 Known Bugs
