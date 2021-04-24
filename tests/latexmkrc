@@ -1,0 +1,7 @@
+#!/usr/bin/env perl
+
+$latex_silent_switch = '-interaction=nonstopmode';
+$lualatex_silent_switch = '-interaction=nonstopmode';
+$pdflatex_silent_switch = '-interaction=nonstopmode';
+$xelatex_silent_switch = '-interaction=nonstopmode';
+$silent = 1;

@@ -61,6 +61,11 @@ Change Log
 Unreleased_
 ^^^^^^^^^^^
 
+Added
+"""""
+
+-   Rudimentary tests to check the correct output is generated
+
 Changed
 """""""
 
