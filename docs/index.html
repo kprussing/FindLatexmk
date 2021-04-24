@@ -1,0 +1,289 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FindLatexmk &#8212; FindLatexmk  documentation</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/kpruss.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+  </head><body>
+<div class="wrapper-masthead">
+  <div class="kpruss-container">
+    <header class="masthead clearfix">
+        <a href="#" class="site-avatar"><img src="https://avatars.githubusercontent.com/kprussing" /></a>
+
+      <div class="site-info">
+          <h1 class="site-name">
+            <a href="#">Keith F. Prussing, Ph.D.</a>
+          </h1>
+          <p class="site-description">FindLatexmk</p>
+      </div>
+
+      
+    </header>
+  </div>
+</div>
+
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="#">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">FindLatexmk</a><ul>
+<li><a class="reference internal" href="#installation">Installation</a></li>
+<li><a class="reference internal" href="#usage">Usage</a><ul>
+<li><a class="reference internal" href="#id1">FindLatexmk</a><ul>
+<li><a class="reference internal" href="#imported-targets">Imported Targets</a></li>
+<li><a class="reference internal" href="#result-variables">Result Variables</a></li>
+<li><a class="reference internal" href="#hints">Hints</a></li>
+<li><a class="reference internal" href="#defined-macros">Defined Macros</a></li>
+<li><a class="reference internal" href="#known-bugs">Known Bugs</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#license">License</a></li>
+<li><a class="reference internal" href="#change-log">Change Log</a><ul>
+<li><a class="reference internal" href="#unreleased">Unreleased</a></li>
+<li><a class="reference internal" href="#id2">0.2 - 2021-04-24</a><ul>
+<li><a class="reference internal" href="#added">Added</a></li>
+<li><a class="reference internal" href="#changed">Changed</a></li>
+<li><a class="reference internal" href="#fixed">Fixed</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id3">0.1 - 2020-09-05</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
+</ul>
+</li>
+</ul>
+
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/index.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+<div class="kpruss-container">
+  
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="findlatexmk">
+<h1>FindLatexmk<a class="headerlink" href="#findlatexmk" title="Permalink to this headline">¶</a></h1>
+<p>A <strong class="program">cmake</strong> module to locate <strong class="program">latexmk</strong> and provide a
+function to add a LaTeX document to the build.  The goal of this module
+is to provide a <strong class="program">cmake</strong> interface similar to <code class="docutils literal notranslate"><span class="pre">add_executable</span></code>
+or <code class="docutils literal notranslate"><span class="pre">add_library</span></code> where one specified the <code class="docutils literal notranslate"><span class="pre">TARGET</span></code> followed by the
+sources  This would let <strong class="program">latexmk</strong> do what it does and manage
+the main LaTeX dependencies while providing a <strong class="program">cmake</strong>-like
+interface.  The pie in the sky interface would be</p>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">add_document(</span><span class="nb">main.pdf</span><span class="w"> </span><span class="nb">main.tex</span><span class="w"> </span><span class="p">[</span><span class="nb">input1.tex</span><span class="w"> </span><span class="nb">input2.tex</span><span class="w"> </span><span class="p">...]</span><span class="nf">)</span><span class="w"></span>
+</pre></div>
+</div>
+<p>However, this it not practical as the exact output can be customized via
+the <code class="docutils literal notranslate"><span class="pre">latexmkrc</span></code> (not limited to specifying the PDF generation via
+<code class="docutils literal notranslate"><span class="pre">pdflatex</span></code>, <code class="docutils literal notranslate"><span class="pre">lualatex</span></code>, or <code class="docutils literal notranslate"><span class="pre">xelatex</span></code>).  This module aims to add a
+proper <strong class="program">cmake</strong> target assuming the user has not added too many
+customizations to their <code class="docutils literal notranslate"><span class="pre">latexmkrc</span></code>.</p>
+<div class="section" id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
+<p>Use <strong class="program">cmake</strong> to generate the <code class="docutils literal notranslate"><span class="pre">FindLatexmk.cmake</span></code> and then
+place it on the <strong class="program">cmake</strong> search path (<code class="docutils literal notranslate"><span class="pre">CMAKE_MODULE_PATH</span></code>) and
+the add <code class="docutils literal notranslate"><span class="pre">find_package(Latexmk)</span></code> to you <code class="docutils literal notranslate"><span class="pre">CMakeLists.txt</span></code>.
+Alternatively, you can place the <code class="docutils literal notranslate"><span class="pre">FindLatexmk.cmake</span></code> in your project
+and then <code class="docutils literal notranslate"><span class="pre">include</span></code> it in your <code class="docutils literal notranslate"><span class="pre">CMakeLists.txt</span></code>.</p>
+</div>
+<div class="section" id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id1">
+<h3>FindLatexmk<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<p>Locate <code class="docutils literal notranslate"><span class="pre">latexmk</span></code> and provide a function to add a LaTeX document as a
+target.  It locates <code class="docutils literal notranslate"><span class="pre">latexmk</span></code> by inspecting the environment variable
+<code class="docutils literal notranslate"><span class="pre">LATEXMK</span></code>, checking in <code class="docutils literal notranslate"><span class="pre">Latexmk_DIR</span></code>, and finally in the directories
+containing the binaries found by <span class="target" id="index-0-module:FindLATEX"></span><code class="xref cmake cmake-module docutils literal notranslate"><span class="pre">FindLATEX</span></code>.  This module will
+also load <span class="target" id="index-1-module:FindLATEX"></span><code class="xref cmake cmake-module docutils literal notranslate"><span class="pre">FindLATEX</span></code> to check that a valid LaTeX compiler is on
+the system.</p>
+<div class="section" id="imported-targets">
+<h4>Imported Targets<a class="headerlink" href="#imported-targets" title="Permalink to this headline">¶</a></h4>
+<p>This module defines the following <span class="target" id="index-0-prop_tgt:IMPORTED"></span><code class="xref cmake cmake-prop_tgt docutils literal notranslate"><span class="pre">IMPORTED</span></code> targets:</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">Latexmk::Latexmk</span></code></dt><dd><p>The <code class="docutils literal notranslate"><span class="pre">latexmk</span></code> executable</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="result-variables">
+<h4>Result Variables<a class="headerlink" href="#result-variables" title="Permalink to this headline">¶</a></h4>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">Latexmk_FOUND</span></code></dt><dd><p>The system has <code class="docutils literal notranslate"><span class="pre">latexmk</span></code></p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">Latexmk_Executable</span></code></dt><dd><p>The path to the <code class="docutils literal notranslate"><span class="pre">latexmk</span></code> executable</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="hints">
+<h4>Hints<a class="headerlink" href="#hints" title="Permalink to this headline">¶</a></h4>
+<p>Additional flags to <code class="docutils literal notranslate"><span class="pre">latexmk</span></code> may be specified via <code class="docutils literal notranslate"><span class="pre">Latexmk_FLAGS</span></code>.</p>
+<p>This module will inspect the environment variable <code class="docutils literal notranslate"><span class="pre">LATEXMK</span></code> for an
+absolute path to <code class="docutils literal notranslate"><span class="pre">latexmk</span></code>.  It is a fatal error if this is not an
+executable.  It will then check <code class="docutils literal notranslate"><span class="pre">Latexmk_DIR</span></code> for the executable
+before checking the directories containing the binaries found by
+<span class="target" id="index-2-module:FindLATEX"></span><code class="xref cmake cmake-module docutils literal notranslate"><span class="pre">FindLATEX</span></code>.</p>
+</div>
+<div class="section" id="defined-macros">
+<h4>Defined Macros<a class="headerlink" href="#defined-macros" title="Permalink to this headline">¶</a></h4>
+<p>This module defines the following macros:</p>
+<dl class="cmake command">
+<dt id="command:add_latex_document">
+<code class="sig-name descname"><span class="pre">add_latex_document</span></code><a class="headerlink" href="#command:add_latex_document" title="Permalink to this definition">¶</a></dt>
+<dd><div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">add_latex_document(</span><span class="w"></span>
+<span class="w">    </span><span class="nv">&lt;main source&gt;</span><span class="w"> </span><span class="p">[</span><span class="nv">&lt;additional sources&gt;</span><span class="w"> </span><span class="p">...]</span><span class="w"> </span><span class="p">[</span><span class="no">ALL</span><span class="p">]</span><span class="w"></span>
+<span class="w">    </span><span class="p">[</span><span class="no">ENGINE</span><span class="w"> </span><span class="no">PDFLATEX</span><span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="no">LUALATEX</span><span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="no">XELATEX</span><span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="no">LATEX</span><span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="no">DVI</span><span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="no">PS</span><span class="p">]</span><span class="w"></span>
+<span class="nf">)</span><span class="w"></span>
+</pre></div>
+</div>
+<p>This function takes a main LaTeX source file and creates a target that
+will run <code class="docutils literal notranslate"><span class="pre">latexmk</span></code> on the input.  All of the dependency scanning for
+the target is deferred to <code class="docutils literal notranslate"><span class="pre">latexmk</span></code>.  The <code class="docutils literal notranslate"><span class="pre">ENGINE</span></code> option sets
+LaTeX engine to use and dictates the output target (<code class="docutils literal notranslate"><span class="pre">PDFLATEX</span></code>,
+<code class="docutils literal notranslate"><span class="pre">LUALATEX</span></code>, and <code class="docutils literal notranslate"><span class="pre">XELATEX</span></code> yield <code class="docutils literal notranslate"><span class="pre">&lt;main</span> <span class="pre">source</span> <span class="pre">root&gt;.pdf</span></code>,
+<code class="docutils literal notranslate"><span class="pre">LATEX</span></code> and <code class="docutils literal notranslate"><span class="pre">DVI</span></code> yield <code class="docutils literal notranslate"><span class="pre">&lt;main</span> <span class="pre">source</span> <span class="pre">root&gt;.dvi</span></code>, and <code class="docutils literal notranslate"><span class="pre">PS</span></code>
+yields <code class="docutils literal notranslate"><span class="pre">&lt;main</span> <span class="pre">source</span> <span class="pre">root&gt;.ps</span></code>).  The default is <code class="docutils literal notranslate"><span class="pre">PDFLATEX</span></code>.  This
+creates a target of the appropriate name (<code class="docutils literal notranslate"><span class="pre">&lt;main</span> <span class="pre">source</span>
+<span class="pre">root&gt;.${ext}</span></code>).  The <code class="docutils literal notranslate"><span class="pre">ALL</span></code> option adds the document to the <code class="docutils literal notranslate"><span class="pre">ALL</span></code>
+command.  Additional flags may be passed via <code class="docutils literal notranslate"><span class="pre">Latesmk_FLAGS</span></code>.  The
+command only uses the main source.  All additional sources are set as
+explicit dependencies for the target at the CMake level (such as a
+<code class="docutils literal notranslate"><span class="pre">latexmkrc</span></code>).</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>It is highly recommended to <em>not</em> add the <code class="docutils literal notranslate"><span class="pre">-dvi</span></code>, <code class="docutils literal notranslate"><span class="pre">-pdf</span></code>,
+<code class="docutils literal notranslate"><span class="pre">-lualatex</span></code>, <code class="docutils literal notranslate"><span class="pre">-xelatex</span></code>, or <code class="docutils literal notranslate"><span class="pre">-ps</span></code> flags to <code class="docutils literal notranslate"><span class="pre">Latexmk_FLAGS</span></code>
+or the equivalent entries in the <code class="docutils literal notranslate"><span class="pre">latexmkrc</span></code> as this may lead to
+files that are not recognized as byproducts by CMake.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method does not sanity check the <code class="docutils literal notranslate"><span class="pre">Latexmk_FLAGS</span></code> for
+incompatible flags.</p>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="known-bugs">
+<h4>Known Bugs<a class="headerlink" href="#known-bugs" title="Permalink to this headline">¶</a></h4>
+<p>This module does not know if it needs to check for <code class="docutils literal notranslate"><span class="pre">biblatex</span></code>,
+<code class="docutils literal notranslate"><span class="pre">biber</span></code>, <code class="docutils literal notranslate"><span class="pre">makeindex</span></code>, or any other executables.  It assumes that if
+<code class="docutils literal notranslate"><span class="pre">latexmk</span></code> has been found, the compilation will succeed.  This is not a
+terrible assumption since a user will most likely have a full enough
+LaTeX installation since they have <code class="docutils literal notranslate"><span class="pre">latexmk</span></code>.</p>
+</div>
+</div>
+</div>
+<div class="section" id="license">
+<h2>License<a class="headerlink" href="#license" title="Permalink to this headline">¶</a></h2>
+<p>Distributed under the OSI-approved <a class="reference external" href="https://opensource.org/licenses/BSD-2-Clause">BSD 2-Clause License</a>.  See the
+module source for details.</p>
+</div>
+<div class="section" id="change-log">
+<h2>Change Log<a class="headerlink" href="#change-log" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="unreleased">
+<h3><a class="reference external" href="https://github.com/kprussing/findlatexmk/compare/0.2...HEAD">Unreleased</a><a class="headerlink" href="#unreleased" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="id2">
+<h3><a class="reference external" href="https://github.com/kprussing/findlatexmk/compare/0.1...0.2">0.2</a> - 2021-04-24<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="added">
+<h4>Added<a class="headerlink" href="#added" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li><p>Rudimentary tests to check the correct output is generated</p></li>
+<li><p>A website</p></li>
+</ul>
+</div>
+<div class="section" id="changed">
+<h4>Changed<a class="headerlink" href="#changed" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li><p>Generate the target based on the engine instead of from the command</p></li>
+<li><p>Moved the usage to a separate file</p></li>
+<li><p>Use <strong class="program">cmake</strong> to generate the final module file</p></li>
+</ul>
+</div>
+<div class="section" id="fixed">
+<h4>Fixed<a class="headerlink" href="#fixed" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li><p>Corrected check for <code class="docutils literal notranslate"><span class="pre">Latexmk_DIR</span></code></p></li>
+</ul>
+</div>
+</div>
+<div class="section" id="id3">
+<h3><a class="reference external" href="https://github.com/kprussing/findlatexmk/releases/tag/0.1">0.1</a> - 2020-09-05<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Functional release</p></li>
+</ul>
+</div>
+</div>
+<div class="section" id="indices-and-tables">
+<h2>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+</div>
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+</div>
+      <div class="clearer"></div>
+    </div>
+  <div class="wrapper-footer">
+    <div class="kpruss-container">
+      <footer class="footer">
+          <a href="mailto: kprussing74@gmail.com">
+              <img src="_static/email.svg" alt="email">
+          </a>
+          <a href="https://github.com/kprussing">
+              <img src="_static/github.svg" alt="GitHub">
+          </a>
+          <a href="https://linkedin.com/in/kprussing">
+              <img src="_static/linkedin.png" alt="LinkedIn" width="40px" height="40px">
+          </a>
+          <a href="https://stackoverflow.com/users/4249913">
+              <img src="_static/stackoverflow.svg" alt="Stack Overflow">
+          </a>
+        
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2021, Keith F. Prussing, Ph.D..
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.5.4.
+    </div>
+      </footer>
+    </div>
+  </div>
+  </body>
+</html>

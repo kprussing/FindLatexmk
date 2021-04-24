@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
 
-project(FindLatexmk LANGUAGES NONE VERSION 0.1)
+project(FindLatexmk LANGUAGES NONE VERSION 0.2)
 
 file(READ usage.rst usage)
 configure_file(FindLatexmk.cmake.in FindLatexmk.cmake @ONLY)

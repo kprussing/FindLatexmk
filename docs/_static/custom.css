@@ -1,0 +1,8 @@
+/* Prevent floating override for the single page output */
+pre, div[class*="highlight-"] {
+    clear: none;
+}
+
+div.section::after {
+    clear: none;
+}

@@ -45,10 +45,14 @@ Change Log
 Unreleased_
 -----------
 
+0.2_ - 2021-04-24
+-----------------
+
 Added
 ^^^^^
 
 -   Rudimentary tests to check the correct output is generated
+-   A website
 
 Changed
 ^^^^^^^
@@ -68,5 +72,6 @@ Fixed
 -   Functional release
 
 .. _BSD 2-Clause License: https://opensource.org/licenses/BSD-2-Clause
-.. _Unreleased: https://github.com/kprussing/findlatexmk/compare/0.1...HEAD
+.. _Unreleased: https://github.com/kprussing/findlatexmk/compare/0.2...HEAD
+.. _0.2: https://github.com/kprussing/findlatexmk/compare/0.1...0.2
 .. _0.1: https://github.com/kprussing/findlatexmk/releases/tag/0.1
