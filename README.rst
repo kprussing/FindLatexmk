@@ -45,6 +45,11 @@ Change Log
 Unreleased_
 -----------
 
+Changed
+^^^^^^^
+
+-   Moved development to ``trunk``
+
 0.2_ - 2021-04-24
 -----------------
 
