@@ -225,6 +225,7 @@ function(add_latex_document source)
     # be so we can add these as byproducts.
     execute_process(
         COMMAND ${Latexmk_Executable}
+            ${Latexmk_FLAGS}
             -e "print join(';', @generated_exts)"
             -e "exit(0)"
             ${source}
