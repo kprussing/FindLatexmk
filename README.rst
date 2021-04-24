@@ -19,35 +19,16 @@ the ``latexmkrc`` (not limited to specifying the PDF generation via
 proper :program:`cmake` target assuming the user has not added too many
 customizations to their ``latexmkrc``.
 
-Usage
------
+Installation
+------------
 
-To include the module in a project:
+Use :program:`cmake` to generate the ``FindLatexmk.cmake`` and then
+place it on the :program:`cmake` search path (``CMAKE_MODULE_PATH``) and
+the add ``find_package(Latexmk)`` to you ``CMakeLists.txt``.
+Alternatively, you can place the ``FindLatexmk.cmake`` in your project
+and then ``include`` it in your ``CMakeLists.txt``.
 
-1.  Add the ``FindLatexmk.cmake`` to your project and the add
-    ``include(FindLatexmk.cmake)`` to your main ``CMakeLists.txt``, or
-2.  Put the ``FindLatexmk.cmake`` on the ``cmake`` search path
-    (``CMAKE_MODULE_PATH``) and use ``find_package(Latexmk)`` in your
-    main ``CMakeLists.txt``.
-
-Then add the following to your ``CMakeLists.txt``
-
-.. code-block:: cmake
-
-  add_latex_document(
-      doc.tex [latexmkrc extra-1.tex extra-2.tex ...]
-      [ENGINE PDFLATEX | LUALATEX | XELATEX | LATEX | DVI | PS]
-  )
-
-Additional flags to ``latexmk`` may be specified with ``Latexmk_FLAGS``.
-
-.. note::
-   It is highly recommended to *not* specify the ``-dvi``, ``-ps``,
-   ``-pdf``, ``-lualatex``, or ``-xelatex`` flags or their equivalents
-   in the ``latexmkrc`` as this could lead to additional files that are
-   not recognized as byproducts by ``cmake``.
-
-For full details, see the internal module documentation.
+.. include:: usage.rst
 
 License
 -------
