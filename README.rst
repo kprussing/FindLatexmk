@@ -27,15 +27,17 @@ To include the module in a project:
 1.  Add the ``FindLatexmk.cmake`` to your project and the add
     ``include(FindLatexmk.cmake)`` to your main ``CMakeLists.txt``, or
 2.  Put the ``FindLatexmk.cmake`` on the ``cmake`` search path
-    (``CMAKE_MODULE_PREFIX``) and use ``find_package(Latexmk)``
-    in your main ``CMakeLists.txt``.
+    (``CMAKE_MODULE_PATH``) and use ``find_package(Latexmk)`` in your
+    main ``CMakeLists.txt``.
 
 Then add the following to your ``CMakeLists.txt``
 
 .. code-block:: cmake
 
-  add_latex_document(doc.<ext> doc.tex [extra-1.tex extra-2.tex ...]
-                     [DRIVER PDFLATEX | LUALATEX | XELATEX])
+  add_latex_document(
+      doc.tex [latexmkrc extra-1.tex extra-2.tex ...]
+      [ENGINE PDFLATEX | LUALATEX | XELATEX | LATEX | DVI | PS]
+  )
 
 Additional flags to ``latexmk`` may be specified with ``Latexmk_FLAGS``.
 
@@ -58,6 +60,11 @@ Change Log
 
 Unreleased_
 ^^^^^^^^^^^
+
+Changed
+"""""""
+
+-   Generate the target based on the engine instead of from the command
 
 Fixed
 """""

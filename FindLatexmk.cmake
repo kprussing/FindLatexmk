@@ -71,25 +71,24 @@ This module defines the following macros:
 
   .. code-block:: cmake
 
-    add_latex_document(<output> <main source> [<additional sources> ...]
-                       [ALL] [ENGINE PDFLATEX | LUALATEX | XELATEX])
+    add_latex_document(
+        <main source> [<additional sources> ...] [ALL]
+        [ENGINE PDFLATEX | LUALATEX | XELATEX | LATEX | DVI | PS]
+    )
 
   This function takes a main LaTeX source file and creates a target that
   will run ``latexmk`` on the input.  All of the dependency scanning for
-  the target is deferred to ``latexmk``.  The driver for ``latexmk`` is
-  deduced from the extension of the output file.  In short, the
-  extension maps directly to the appropriate ``latexmk`` flag (i.e.
-  ``.dvi`` -> ``-dvi``, ``.ps`` -> ``-ps``, ``.pdf`` -> ``-pdf``).  The
-  exception is ``.pdf`` extensions.  If the output is PDF, the
-  ``ENGINE`` option can be used to change the desired back-end to
-  ``pdflatex``, ``lualatex``, or ``xelatex`` as desired.  The default is
-  to use ``lualatex`` as that is the future (cannot seem to find the
-  link where I read that at the moment).  It is a ``FATAL_ERROR`` to
-  specify the ``ENGINE`` for a DVI or Postscript target.  The ``ALL``
-  option adds the document to the ``ALL`` command.  Additional flags may
-  be passed via ``Latesmk_FLAGS``.  The command only uses the main
-  source.  All additional sources are set as explicit dependencies for
-  the main target (``<output>``) at the CMake level.
+  the target is deferred to ``latexmk``.  The ``ENGINE`` option sets
+  LaTeX engine to use and dictates the output target (``PDFLATEX``,
+  ``LUALATEX``, and ``XELATEX`` yield ``<main source root>.pdf``,
+  ``LATEX`` and ``DVI`` yield ``<main source root>.dvi``, and ``PS``
+  yields ``<main source root>.ps``).  The default is ``PDFLATEX``.  This
+  creates a target of the appropriate name (``<main source
+  root>.${ext}``).  The ``ALL`` option adds the document to the ``ALL``
+  command.  Additional flags may be passed via ``Latesmk_FLAGS``.  The
+  command only uses the main source.  All additional sources are set as
+  explicit dependencies for the target at the CMake level (such as a
+  ``latexmkrc``).
 
   .. note::
     It is highly recommended to *not* add the ``-dvi``, ``-pdf``,
@@ -183,37 +182,43 @@ add_executable(Latexmk::Latexmk IMPORTED)
 set_property(TARGET Latexmk::Latexmk
              PROPERTY IMPORTED_LOCATION "${Latexmk_Executable}")
 
-function(add_latex_document target source)
-    cmake_parse_arguments(PARSE_ARGV 2 latexmk "ALL" "ENGINE" "")
+function(add_latex_document source)
+    cmake_parse_arguments(PARSE_ARGV 1 latexmk "ALL" "ENGINE" "")
     # Split the root and extension from the target
-    get_filename_component(root ${target} NAME_WE)
-    get_filename_component(ext ${target} LAST_EXT)
+    get_filename_component(root ${source} NAME_WE)
+
+    # Determine the output flags and extension based on the given
+    # ENGINE.
+    if (latexmk_ENGINE MATCHES "PDFLATEX")
+        set(ext "pdf")
+        set(flags "-dvi-;-ps-;-pdf")
+    elseif (latexmk_ENGINE MATCHES "LUALATEX")
+        set(ext "pdf")
+        set(flags "-dvi-;-ps-;-lualatex")
+    elseif (latexmk_ENGINE MATCHES "XELATEX")
+        set(ext "pdf")
+        set(flags "-dvi-;-ps-;-xelatex")
+    elseif (latexmk_ENGINE MATCHES "(LATEX|DVI)")
+        set(ext "dvi")
+        set(flags "-dvi;-ps-;-pdf-")
+    elseif (latexmk_ENGINE MATCHES "PS")
+        set(ext "ps")
+        set(flags "-dvi-;-ps;-pdf-")
+    elseif (latexmk_ENGINE MATCHES "")
+        set(ext "pdf")
+        set(flags "-dvi-;-ps-;-pdf")
+    else()
+        message(FATAL_ERROR "Unknown engine '${latexmk_ENGINE}'")
+    endif()
+
+    set(target ${root}.${ext})
     set(byproducts "${target};${root}.log;${root}.fdb_latexmk")
 
-    # Determine the output flags based on the extension and the given
-    # ENGINE.
-    if (ext MATCHES "[.][Dd][Vv][Ii]")
-        if (NOT latexmk_ENGINE MATCHES "")
-            message(WARNING "ENGINE not supported for dvi output")
-        endif()
-        set(flags "-dvi;-ps-;-pdf-")
-    elseif(ext MATCHES "[.][Pp][Ss]")
-        if (NOT latexmk_ENGINE MATCHES "")
-            message(WARNING "ENGINE not supported for postscript output")
-        endif()
-        set(flags "-dvi-;-ps;-pdf-")
-    elseif(ext MATCHES "[.][Pp][Dd][Ff]")
-        if (latexmk_ENGINE MATCHES "(|LUALATEX)")
-            set(flags "-dvi-;-ps-;-lualatex")
-        elseif(latexmk_ENGINE MATCHES "XELATEX")
-            set(flags "-dvi-;-ps-;-xelatex")
-        elseif(latexmk_ENGINE MATCHES "PDFLATEX")
-            set(flags "-dvi-;-ps-;-pdf")
-        else()
-            message(FATAL_ERROR "Unknown ENGINE ${latexmk_ENGINE}")
-        endif()
-    else()
-        message(FATAL_ERROR "Unknown extension ${ext}")
+    # Extra outputs not reported by latexmk.
+    if (latexmk_ENGINE MATCHES "XELATEX")
+        list(APPEND byproducts ${root}.xdv)
+    elseif (latexmk_ENGINE MATCHES "PS")
+        list(APPEND byproducts ${root}.dvi)
     endif()
 
     # Run Latexmk to determine what it thinks the generated files will
@@ -255,4 +260,3 @@ function(add_latex_document target source)
                       BYPRODUCTS ${byproducts}
                      )
 endfunction()
-
